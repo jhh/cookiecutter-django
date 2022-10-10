@@ -1,16 +1,25 @@
 [tool.poetry]
-name = "cookiecutter-django"
-version = "0.1.0"
-description = "Cookiecutter template for Django projects."
 authors = ["Jeff Hutchison <jeff@jeffhutchison.com>"]
+description = "Cookiecutter template for Django projects."
 license = "MIT"
-readme = "README.md"
+name = "cookiecutter-django"
 packages = [{include = "cookiecutter_django"}]
+readme = "README.md"
+version = "0.1.0"
 
 [tool.poetry.dependencies]
 python = "^3.10"
 
+[tool.poetry.group.dev.dependencies]
+black = "^22.10.0"
 
 [build-system]
-requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core"]
+
+[tool.black]
+line-length = 90
+target-version = ['py310']
+
+[tool.isort]
+profile = "black"

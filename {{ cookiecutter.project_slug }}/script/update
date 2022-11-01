@@ -1,0 +1,25 @@
+#!/bin/sh
+
+# script/update: Update my_awesome_project  to run for its current checkout.
+
+set -e
+
+cd "$(dirname "$0")/.."
+. script/.config
+
+script/bootstrap || exit 0
+
+_message "==> Updating Tailwind CSS…"
+npx postcss "$APPS_DIR/static/css/base.css" -o "$APPS_DIR/static/css/main.css"
+NODE_ENV=production npx postcss "$APPS_DIR/static/css/base.css" -o "$APPS_DIR/static/css/main.min.css"
+
+if [ -n "$USE_HTMX" ]; then
+    _message "==> Updating HTMX…"
+    cp node_modules/htmx.org/dist/htmx.min.js "$APPS_DIR/static/js/"
+    cp node_modules/htmx.org/dist/ext/class-tools.js "$APPS_DIR/static/js/"
+fi
+
+if [ -n "$USE_HYPERSCRIPT" ]; then
+    _message "==> Updating _Hyperscript…"
+    cp node_modules/hyperscript.org/dist/_hyperscript.min.js "$APPS_DIR/static/js/"
+fi

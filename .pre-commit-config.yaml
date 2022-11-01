@@ -1,4 +1,4 @@
-exclude: "{{cookiecutter.project_slug}}"
+exclude: "{{ cookiecutter.project_slug }}"
 default_stages: [commit]
 
 repos:

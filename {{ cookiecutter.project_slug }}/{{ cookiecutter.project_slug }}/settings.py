@@ -58,7 +58,11 @@ LOCAL_APPS = [
 ]
 
 # Apps
-THIRD_PARTY_APPS = []
+THIRD_PARTY_APPS = [
+{%- if cookiecutter.use_htmx == 'y' %}
+    "django_htmx",
+{%- endif %}
+]
 DJANGO_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -73,12 +77,16 @@ INSTALLED_APPS = LOCAL_APPS + THIRD_PARTY_APPS + DJANGO_APPS
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+{%- if cookiecutter.use_htmx == 'y' %}
+    "django_htmx.middleware.HtmxMiddleware",
+{%- endif %}
 ]
 
 # URLs
@@ -91,7 +99,7 @@ WSGI_APPLICATION = "{{ cookiecutter.project_slug }}.wsgi.application"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [APPS_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -132,6 +140,9 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # django.contrib.staticfiles
 STATIC_URL = "static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_DIRS = [APPS_DIR / "static"]
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Third Party Settings
 # ------------------------------------------------------------------------------

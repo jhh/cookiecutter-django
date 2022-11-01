@@ -1,0 +1,24 @@
+{% raw %}{% load static %}{% endraw %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% raw %}{% block title %}{% endraw %}{{ cookiecutter.project_name }}{% raw %}{% endblock title %}{% endraw %}</title>
+  <meta name="author" content="{{ cookiecutter.author_name }}">
+  <link rel="stylesheet" href="{% raw %}{% static 'css/main.css' %}{% endraw %}">
+  {%- if cookiecutter.use_htmx == 'y' %}
+  <script src="{% raw %}{% static 'js/htmx.min.js' %}{% endraw %}" defer></script>
+  {%- endif %}
+  {%- if cookiecutter.use_hyperscript == 'y' %}
+  <script src="{% raw %}{% static 'js/_hyperscript.min.js' %}{% endraw %}" defer></script>
+  {%- endif %}
+</head>
+<body>
+{% raw %}{% block content %}{% endraw %}
+  <h1 class="text-3xl font-bold underline">
+    {{ cookiecutter.project_name }}
+  </h1>
+{% raw %}{% endblock content %}{% endraw %}
+</body>
+</html>

@@ -1,0 +1,31 @@
+#!/bin/sh
+
+# script/bootstrap: Resolve all dependencies that the my_awesome_project
+#                   requires to run.
+
+set -e
+
+cd "$(dirname "$0")/.."
+. script/.config
+
+if [ ! -f ".envrc" ]; then
+    _message "==> Installing flake dependencies…"
+    echo "use flake" > .envrc
+    direnv allow .
+    _warn "==> Re-run $0 after direnv completes building."
+    exit 1
+fi
+
+if [ -f "pyproject.toml" ]; then
+    _message "==> Installing python dependencies…"
+    poetry env info -p >/dev/null 2>&1 || {
+        poetry install
+    }
+fi
+
+if [ -f "package.json" ]; then
+    _message "==> Installing NPM CSS & JS dependencies…"
+    [ -d "node_modules" ] || {
+        npm install
+    }
+fi

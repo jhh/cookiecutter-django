@@ -37,6 +37,7 @@
         devShell = pkgs.mkShell {
           buildInputs = with pkgs; [
             postgresql
+            nodejs-16_x
             (python310.withPackages (ps: with ps; [ poetry ]))
           ] ++ lib.optional stdenv.isDarwin openssl;
         };

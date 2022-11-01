@@ -4,5 +4,7 @@
   "description": "Behold My Awesome Project!",
   "author_name": "Jeff Hutchison",
   "domain_name": "{{ cookiecutter.project_slug }}.j3ff.io",
-  "author_email": "jeff@{{ cookiecutter.domain_name }}"
+  "author_email": "jeff@{{ cookiecutter.domain_name }}",
+  "use_htmx": "y",
+  "use_hyperscript": "y"
 }

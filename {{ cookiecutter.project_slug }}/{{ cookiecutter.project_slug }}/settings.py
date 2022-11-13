@@ -122,40 +122,30 @@ LOGGING = {
     "formatters": {
         "rich": {"datefmt": "[%X]"},
     },
-    "filters": {
-        "require_debug_false": {
-            "()": "django.utils.log.RequireDebugFalse",
-        },
-        "require_debug_true": {
-            "()": "django.utils.log.RequireDebugTrue",
-        },
-    },
-    "handlers": {
-        "console": {
-            "class": "rich.logging.RichHandler",
-            "formatter": "rich",
-            "level": "DEBUG",
-            "rich_tracebacks": True,
-            "tracebacks_show_locals": True,
-            "filters": ["require_debug_true"],
-        },
-        "production": {
-            "level": "ERROR",
-            "filters": ["require_debug_false"],
-            "class": "logging.StreamHandler",
-        },
-    },
+    "handlers": {},
     "loggers": {
         "django": {
-            "handlers": ["production"],
-            "level": "INFO",
-        },
+            "handlers": ["console"],
+            "level": "INFO" if DEBUG else "WARNING",
+        }
     },
     "root": {
-        "handlers": ["console", "production"],
-        "level": "DEBUG" if DEBUG else "INFO",
+        "handlers": ["console"],
+        "level": env.str("DJANGO_LOG_LEVEL", "WARNING"),
     },
 }
+
+if DEBUG:
+    LOGGING["handlers"]["console"] = {
+        "class": "rich.logging.RichHandler",
+        "formatter": "rich",
+        "rich_tracebacks": True,
+        "tracebacks_show_locals": True,
+    }
+else:
+    LOGGING["handlers"]["console"] = {
+        "class": "logging.StreamHandler",
+    }
 
 
 # Django Contrib Settings

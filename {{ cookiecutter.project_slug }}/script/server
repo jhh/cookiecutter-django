@@ -1,13 +1,11 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 # script/server: Launch {{ cookiecutter.project_slug }} and any extra required processes
 #                locally.
 
-set -e
-
-cd "$(dirname "$0")/.."
+source "$(dirname "$0")/.config"
 
 # ensure everything in the app is up to date.
-script/update
+script/update || exit 1
 
 poetry run python manage.py runserver

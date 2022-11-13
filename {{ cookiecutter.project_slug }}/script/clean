@@ -1,24 +1,26 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 # script/clean: Remove all build artifacts and cached dependencies.
 
-set -e
-
-cd "$(dirname "$0")/.."
-source script/.config
+source "$(dirname "$0")/.config"
 
 if [ "$1" != "-y" ]; then
-    echo "==> Aborting, run $0 with \"-y\" to confirm"
-    exit -1
+    _warn "==> Aborting, run $SCRIPT_NAME with \"-y\" to confirm"
+    exit 1
 fi
 
-if [ -d "$THIRD_PARTY_DIR" ]; then
-    echo "==> Removing third party repos…"
-    rm -rf $THIRD_PARTY_DIR
+if [ -d ".direnv" ]; then
+    _message "==> Removing direnv cache…"
+    rm -rf .direnv
 fi
 
-echo "==> Removing files in .gitignore…"
+if [ -d "node_modules" ]; then
+    _message "==> Removing node_modules…"
+    rm -rf node_modules
+fi
+
+_message "==> Removing files in .gitignore…"
 git clean -dfX -n
 
-echo "==> Removing poetry environments…"
+_message "==> Removing poetry environments…"
 poetry env remove --all

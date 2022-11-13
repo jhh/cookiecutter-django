@@ -9,18 +9,8 @@ if [ "$1" != "-y" ]; then
     exit 1
 fi
 
-if [ -d ".direnv" ]; then
-    _message "==> Removing direnv cache…"
-    rm -rf .direnv
-fi
-
-if [ -d "node_modules" ]; then
-    _message "==> Removing node_modules…"
-    rm -rf node_modules
-fi
-
 _message "==> Removing files in .gitignore…"
-git clean -dfX -n
+git clean -dfX --exclude='!.env'
 
 _message "==> Removing poetry environments…"
 poetry env remove --all

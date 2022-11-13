@@ -31,6 +31,7 @@ if [ -f ".pre-commit-config.yaml" ]; then
     _message "==> Installing pre-commit"
     if [ ! -d ".git" ]; then
         git init
+        git add flake.*
     fi
     if [ ! -f ".git/hooks/pre-commit" ]; then
         pre-commit install --install-hooks

@@ -116,6 +116,47 @@ TEMPLATES = [
     },
 ]
 
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "rich": {"datefmt": "[%X]"},
+    },
+    "filters": {
+        "require_debug_false": {
+            "()": "django.utils.log.RequireDebugFalse",
+        },
+        "require_debug_true": {
+            "()": "django.utils.log.RequireDebugTrue",
+        },
+    },
+    "handlers": {
+        "console": {
+            "class": "rich.logging.RichHandler",
+            "formatter": "rich",
+            "level": "DEBUG",
+            "rich_tracebacks": True,
+            "tracebacks_show_locals": True,
+            "filters": ["require_debug_true"],
+        },
+        "production": {
+            "level": "ERROR",
+            "filters": ["require_debug_false"],
+            "class": "logging.StreamHandler",
+        },
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["production"],
+            "level": "INFO",
+        },
+    },
+    "root": {
+        "handlers": ["console", "production"],
+        "level": "DEBUG" if DEBUG else "INFO",
+    },
+}
+
 
 # Django Contrib Settings
 # ------------------------------------------------------------------------------

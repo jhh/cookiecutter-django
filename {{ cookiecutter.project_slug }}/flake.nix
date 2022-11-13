@@ -2,9 +2,10 @@
   description = "{{ cookiecutter.description }}";
 
   inputs.flake-utils.url = "github:numtide/flake-utils";
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/79d3ca08920364759c63fd3eb562e99c0c17044a";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
   inputs.poetry2nix = {
-    url = "github:nix-community/poetry2nix";
+    # url = "github:nix-community/poetry2nix";
+    url = "github:jhh/poetry2nix/django-htmx-build";
     inputs.nixpkgs.follows = "nixpkgs";
   };
 
@@ -28,17 +29,15 @@
         };
       in
       {
-        apps = {
-          {{ cookiecutter.project_slug }} = pkgs.{{ cookiecutter.project_slug }};
-        };
 
-        defaultApp = pkgs.{{ cookiecutter.project_slug }};
+        packages.default = pkgs.{{ cookiecutter.project_slug }}.dependencyEnv;
 
         devShell = pkgs.mkShell {
           buildInputs = with pkgs; [
             postgresql
-            nodejs-16_x
-            (python310.withPackages (ps: with ps; [ poetry ]))
+            nodejs
+            poetry
+            pre-commit
           ] ++ lib.optional stdenv.isDarwin openssl;
         };
       }));

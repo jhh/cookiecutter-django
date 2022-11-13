@@ -9,7 +9,7 @@
     }
   },
   "scripts": {
-    "build": "postcss puka/static/css/base.css -o puka/static/css/main.css",
+    "build": "postcss {{ cookiecutter.project_slug }}/static/css/base.css -o {{ cookiecutter.project_slug }}/static/css/main.css",
     "watch": "npm-watch"
   },
   "devDependencies": {

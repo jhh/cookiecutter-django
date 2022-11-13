@@ -49,16 +49,19 @@ DATABASES["default"] = env.db(
 )  # noqa F405
 DATABASES["default"]["ATOMIC_REQUESTS"] = True  # noqa F405
 DATABASES["default"]["CONN_MAX_AGE"] = env.int(
-    "DATABASE_CONN_MAX_AGE", default=60
+    "DATABASE_CONN_MAX_AGE",
+    default=60,
 )  # noqa F405
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Apps
 
 LOCAL_APPS = [
     "{{ cookiecutter.project_slug }}.core",
 ]
 
-# Apps
 THIRD_PARTY_APPS = [
+    "debug_toolbar",
 {%- if cookiecutter.use_htmx == 'y' %}
     "django_htmx",
 {%- endif %}
@@ -84,6 +87,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 {%- if cookiecutter.use_htmx == 'y' %}
     "django_htmx.middleware.HtmxMiddleware",
 {%- endif %}
@@ -146,7 +150,8 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Third Party Settings
 # ------------------------------------------------------------------------------
-
+# enable debug_toolbar and debug context
+INTERNAL_IPS = ["127.0.0.1"]
 
 # Project Settings
 # ------------------------------------------------------------------------------

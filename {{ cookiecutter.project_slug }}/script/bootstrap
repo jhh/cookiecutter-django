@@ -29,3 +29,10 @@ if [ -f "package.json" ]; then
         npm install
     }
 fi
+
+if [ -f ".pre-commit-config.yaml" ]; then
+    _message "==> Installing pre-commit"
+    if [ ! -f ".git/hooks/pre-commit" ]; then
+        pre-commit install --install-hooks
+    fi
+fi

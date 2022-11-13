@@ -6,7 +6,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% raw %}{% block title %}{% endraw %}{{ cookiecutter.project_name }}{% raw %}{% endblock title %}{% endraw %}</title>
   <meta name="author" content="{{ cookiecutter.author_name }}">
-  <link rel="stylesheet" href="{% raw %}{% static 'css/main.css' %}{% endraw %}">
+  {% raw %}{% if debug %}{% endraw %}
+    <link rel="stylesheet" href="{% raw %}{% static 'css/main.css' %}{% endraw %}">
+  {% raw %}{% else %}{% endraw %}
+    <link rel="stylesheet" href="{% raw %}{% static 'css/main.min.css' %}{% endraw %}">
+  {% raw %}{% endif %}{% endraw %}
   {%- if cookiecutter.use_htmx == 'y' %}
   <script src="{% raw %}{% static 'js/htmx.min.js' %}{% endraw %}" defer></script>
   {%- endif %}

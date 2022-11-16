@@ -1,3 +1,4 @@
+import json
 import random
 import string
 from pathlib import Path
@@ -26,9 +27,61 @@ def set_django_secret_key(env_path):
         f.truncate()
 
 
+def remove_tailwind_css():
+    Path("{{cookiecutter.project_slug}}/static/css/base.css").unlink()
+    Path("tailwind.config.js").unlink()
+    Path("postcss.config.js").unlink()
+
+
+def remove_missing_css():
+    pass
+
+
+TAILWIND_DEPS = [
+    "@tailwindcss/forms",
+    "autoprefixer",
+    "cssnano",
+    "npm-watch",
+    "postcss",
+    "postcss-cli",
+    "prettier-plugin-tailwindcss",
+    "tailwindcss",
+]
+
+
+def generate_package_json():
+    pj_path = Path("package.json")
+
+    with pj_path.open() as f:
+        pj = json.load(f)
+
+    if "{{cookiecutter.css_framework}}" != "Tailwind CSS":
+        for dep in TAILWIND_DEPS:
+            del pj["devDependencies"][dep]
+        del pj["watch"]
+        del pj["scripts"]
+
+    if "{{ cookiecutter.use_htmx }}" != "y":
+        del pj["devDependencies"]["htmx.org"]
+
+    if "{{ cookiecutter.use_hyperscript }}" != "y":
+        del pj["devDependencies"]["hyperscript.org"]
+
+    with pj_path.open(mode="w") as f:
+        json.dump(pj, f, indent=2)
+
+
 def main():
     env_path = rename_env()
     set_django_secret_key(env_path)
+
+    generate_package_json()
+
+    if "{{cookiecutter.css_framework}}" != "Tailwind CSS":
+        remove_tailwind_css()
+
+    if "{{cookiecutter.css_framework}}" != "Missing CSS":
+        remove_missing_css()
 
 
 if __name__ == "__main__":

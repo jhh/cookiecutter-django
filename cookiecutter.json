@@ -6,5 +6,6 @@
   "domain_name": "{{ cookiecutter.project_slug }}.j3ff.io",
   "author_email": "jeff@{{ cookiecutter.domain_name }}",
   "use_htmx": "y",
-  "use_hyperscript": "y"
+  "use_hyperscript": "y",
+  "css_framework": ["Tailwind CSS", "Missing CSS"]
 }

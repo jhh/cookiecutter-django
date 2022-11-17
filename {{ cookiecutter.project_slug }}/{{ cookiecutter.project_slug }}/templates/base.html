@@ -16,6 +16,9 @@
   {%- if cookiecutter.css_framework == 'Missing CSS' %}
   <link rel="stylesheet" href="{% raw %}{% static 'css/missing.min.css' %}{% endraw %}">
   {%- endif %}
+  {%- if cookiecutter.css_framework == 'Pico CSS' %}
+  <link rel="stylesheet" href="{% raw %}{% static 'css/pico.min.css' %}{% endraw %}">
+  {%- endif %}
   {%- if cookiecutter.use_htmx == 'y' %}
   <script src="{% raw %}{% static 'js/htmx.min.js' %}{% endraw %}" defer></script>
   {%- endif %}

@@ -2,6 +2,7 @@ import sys
 from pathlib import Path
 
 import environ
+import pytest_is_running
 
 # 0. Setup
 
@@ -11,12 +12,7 @@ APPS_DIR = BASE_DIR / "{{ cookiecutter.project_slug }}"
 env = environ.Env()
 
 # Load env vars from .env file if not testing
-try:
-    command = sys.argv[1]
-except IndexError:
-    command = "help"
-
-if command != "test":
+if not pytest_is_running.is_running():
     env.read_env(str(BASE_DIR / ".env"))
 
 # Django Core Settings
@@ -31,7 +27,11 @@ ALLOWED_HOSTS = (
     else env.list("DJANGO_ALLOWED_HOSTS", default=["{{ cookiecutter.domain_name }}"])
 )
 
-SECRET_KEY = env("DJANGO_SECRET_KEY")
+SECRET_KEY = (
+    env("DJANGO_SECRET_KEY")
+    if not pytest_is_running.is_running()
+    else "!!!TEST_SECRET_KEY!!!"
+)
 
 LANGUAGE_CODE = "en-us"
 

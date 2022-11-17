@@ -7,5 +7,5 @@
   "author_email": "jeff@{{ cookiecutter.domain_name }}",
   "use_htmx": "y",
   "use_hyperscript": "y",
-  "css_framework": ["Tailwind CSS", "Missing CSS"]
+  "css_framework": ["Tailwind CSS", "Missing CSS", "Pico CSS"]
 }

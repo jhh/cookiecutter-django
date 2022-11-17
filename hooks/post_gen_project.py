@@ -37,6 +37,10 @@ def remove_missing_css():
     pass
 
 
+def remove_pico_css():
+    pass
+
+
 TAILWIND_DEPS = [
     "@tailwindcss/forms",
     "autoprefixer",
@@ -61,6 +65,9 @@ def generate_package_json():
         del pj["watch"]
         del pj["scripts"]
 
+    if "{{cookiecutter.css_framework}}" != "Pico CSS":
+        del pj["devDependencies"]["@picocss/pico"]
+
     if "{{ cookiecutter.use_htmx }}" != "y":
         del pj["devDependencies"]["htmx.org"]
 
@@ -82,6 +89,9 @@ def main():
 
     if "{{cookiecutter.css_framework}}" != "Missing CSS":
         remove_missing_css()
+
+    if "{{cookiecutter.css_framework}}" != "Pico CSS":
+        remove_pico_css()
 
 
 if __name__ == "__main__":

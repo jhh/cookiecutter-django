@@ -28,7 +28,7 @@ ALLOWED_HOSTS = (
     else env.list("DJANGO_ALLOWED_HOSTS", default=["{{ cookiecutter.domain_name }}"])
 )
 
-env("DJANGO_SECRET_KEY") if not pytest_is_running.is_running() else "!!!TEST_SECRET_KEY!!!"
+SECRET_KEY = env("DJANGO_SECRET_KEY") if not pytest_is_running.is_running() else "!!!TEST_SECRET_KEY!!!"
 
 LANGUAGE_CODE = "en-us"
 

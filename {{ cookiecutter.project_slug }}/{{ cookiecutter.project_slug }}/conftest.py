@@ -1,3 +1,7 @@
+from __future__ import annotations
+
+from typing import Any
+
 import pytest
 from django.test.utils import override_settings
 
@@ -8,5 +12,4 @@ def test_settings():
         yield
 
 
-TEST_SETTINGS = {
-}
+TEST_SETTINGS: dict[str, Any] = {}

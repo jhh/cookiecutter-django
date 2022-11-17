@@ -76,6 +76,7 @@ def generate_package_json():
 
     with pj_path.open(mode="w") as f:
         json.dump(pj, f, indent=2)
+        f.write("\n")  # avoid pre-commit edit
 
 
 def main():

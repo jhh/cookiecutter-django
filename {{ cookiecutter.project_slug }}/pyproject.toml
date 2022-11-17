@@ -8,11 +8,11 @@ readme = "README.md"
 version = "0.1.0"
 
 [tool.poetry.dependencies]
+{%- if cookiecutter.use_htmx == 'y' %}
+{%- endif %}
 Django = {extras = ["argon2"], version = "^4.1"}
 django-environ = "^0.9.0"
-{%- if cookiecutter.use_htmx == 'y' %}
 django-htmx = "^1.11.0"
-{%- endif %}
 psycopg2 = "^2.9.3"
 python = "^3.10"
 whitenoise = {extras = ["brotli"], version = "^6.1.0"}
@@ -21,11 +21,18 @@ whitenoise = {extras = ["brotli"], version = "^6.1.0"}
 black = "^22.10.0"
 coverage = "^6.4"
 django-debug-toolbar = "^3.4.0"
+ipython = "^8.6.0"
 pytest-django = "^4.5.2"
 pytest-is-running = "^1.3.0"
 rich = "^12.4.4"
-ipython = "^8.6.0"
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
 requires = ["poetry-core"]
+
+[tool.black]
+line-length = 99
+target-version = ['py39']
+
+[tool.isort]
+profile = "black"

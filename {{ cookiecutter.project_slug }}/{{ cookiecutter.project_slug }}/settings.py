@@ -1,4 +1,5 @@
-import sys
+from __future__ import annotations
+
 from pathlib import Path
 
 import environ
@@ -27,11 +28,7 @@ ALLOWED_HOSTS = (
     else env.list("DJANGO_ALLOWED_HOSTS", default=["{{ cookiecutter.domain_name }}"])
 )
 
-SECRET_KEY = (
-    env("DJANGO_SECRET_KEY")
-    if not pytest_is_running.is_running()
-    else "!!!TEST_SECRET_KEY!!!"
-)
+env("DJANGO_SECRET_KEY") if not pytest_is_running.is_running() else "!!!TEST_SECRET_KEY!!!"
 
 LANGUAGE_CODE = "en-us"
 
@@ -127,7 +124,7 @@ LOGGING = {
         "django": {
             "handlers": ["console"],
             "level": "INFO" if DEBUG else "WARNING",
-        }
+        },
     },
     "root": {
         "handlers": ["console"],
@@ -136,14 +133,14 @@ LOGGING = {
 }
 
 if DEBUG:
-    LOGGING["handlers"]["console"] = {
+    LOGGING["handlers"]["console"] = {  # type: ignore
         "class": "rich.logging.RichHandler",
         "formatter": "rich",
         "rich_tracebacks": True,
         "tracebacks_show_locals": True,
     }
 else:
-    LOGGING["handlers"]["console"] = {
+    LOGGING["handlers"]["console"] = {  # type: ignore
         "class": "logging.StreamHandler",
     }
 

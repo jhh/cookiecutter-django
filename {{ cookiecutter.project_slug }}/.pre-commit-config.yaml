@@ -67,4 +67,5 @@ repos:
           - django-htmx
           - django-stubs
           - psycopg2
+          - pytest_is_running
           - types-all

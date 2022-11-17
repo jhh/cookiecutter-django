@@ -19,7 +19,7 @@ if [ -f "pyproject.toml" ]; then
         poetry lock
     fi
     poetry env info -p >/dev/null 2>&1 || {
-        poetry install
+        poetry install --with=dev
     }
 fi
 

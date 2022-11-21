@@ -55,6 +55,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 LOCAL_APPS = [
     "{{ cookiecutter.project_slug }}.core",
+    "{{ cookiecutter.project_slug }}.pages.apps.PagesConfig",
 ]
 
 THIRD_PARTY_APPS = [

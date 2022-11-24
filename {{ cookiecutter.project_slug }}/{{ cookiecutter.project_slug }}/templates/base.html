@@ -27,10 +27,11 @@
   {%- endif %}
 </head>
 <body>
+  <header>
+    <a href="{% raw %}{% url 'home' %}{% endraw %}">Home</a>
+    <a href="{% raw %}{% url 'about' %}{% endraw %}">About</a>
+  </header>
 {% raw %}{% block content %}{% endraw %}
-  <h1{% if cookiecutter.css_framework == 'Tailwind CSS' %} class="text-3xl font-bold"{% endif %}>
-    {{ cookiecutter.project_name }}
-  </h1>
 {% raw %}{% endblock content %}{% endraw %}
 </body>
 </html>

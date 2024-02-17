@@ -1,8 +1,8 @@
 [tool.poetry]
 name = "app"
 version = "0.1.0"
-description = "{{ cookiecutter.description }}"
-authors = [ "{{ cookiecutter.author_name }} <{{ cookiecutter.author_email }}>" ]
+description = "Behold My Awesome Project!"
+authors = [ "Jeff Hutchison <jeff@j3ff.io>" ]
 license = "MIT"
 readme = "README.md"
 
@@ -10,6 +10,7 @@ readme = "README.md"
 python = "^3.11"
 Django = {extras = ["argon2"], version = "^5.0"}
 psycopg  = {extras = ["binary", "pool"], version = "^3.1"}
+whitenoise = "^6.6.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.0.0"

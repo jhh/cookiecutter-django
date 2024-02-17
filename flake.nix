@@ -11,7 +11,7 @@
       let pkgs = nixpkgs.legacyPackages.${system}; in
       {
         devShell = pkgs.mkShell {
-          nativeBuildInputs = with pkgs; [ cookiecutter poetry pre-commit ];
+          nativeBuildInputs = with pkgs; [ cookiecutter pre-commit ];
         };
       }
     );

@@ -1,38 +1,29 @@
 [tool.poetry]
-authors = ["{{ cookiecutter.author_name }} <{{ cookiecutter.author_email }}>"]
-description = "{{ cookiecutter.description }}"
-license = "MIT"
-name = "{{ cookiecutter.project_slug }}"
-packages = [{include = "{{ cookiecutter.project_slug }}"}]
-readme = "README.md"
+name = "app"
 version = "0.1.0"
+description = "{{ cookiecutter.description }}"
+authors = [ "{{ cookiecutter.author_name }} <{{ cookiecutter.author_email }}>" ]
+license = "MIT"
+readme = "README.md"
 
-[tool.poetry.dependencies]
-{%- if cookiecutter.use_htmx == 'y' %}
-{%- endif %}
-Django = {extras = ["argon2"], version = "^4.1"}
-django-environ = "^0.9.0"
-django-htmx = "^1.11.0"
-psycopg2 = "^2.9.3"
-pytest-is-running = "^1.3.0"
-python = "^3.10"
-whitenoise = {extras = ["brotli"], version = "^6.1.0"}
+[tool.poetry.group.main.dependencies]
+python = "^3.11"
+Django = {extras = ["argon2"], version = "^5.0"}
+psycopg  = {extras = ["binary", "pool"], version = "^3.1"}
 
 [tool.poetry.group.dev.dependencies]
-black = "^22.10.0"
-coverage = "^6.4"
-django-debug-toolbar = "^3.4.0"
-ipython = "^8.6.0"
-pytest-django = "^4.5.2"
-rich = "^12.4.4"
+black = "^24.0.0"
+rich = "^13.0.0"
+django-debug-toolbar = "^4.2"
+ipython = "^8.21.0"
 
 [build-system]
-build-backend = "poetry.core.masonry.api"
 requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
 
 [tool.black]
 line-length = 99
-target-version = ['py39']
+target-version = ['py311']
 
 [tool.isort]
 profile = "black"

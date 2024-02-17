@@ -1,43 +1,42 @@
 {
-  description = "{{ cookiecutter.description }}";
+  description = "{{ cookiecutter.project_name }}";
 
-  inputs.flake-utils.url = "github:numtide/flake-utils";
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-  inputs.poetry2nix = {
-    url = "github:nix-community/poetry2nix";
-    inputs.nixpkgs.follows = "nixpkgs";
+  inputs = {
+    flake-utils.url = "github:numtide/flake-utils";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    poetry2nix = {
+      url = "github:nix-community/poetry2nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = { self, nixpkgs, flake-utils, poetry2nix }:
-    {
-      # Nixpkgs overlay providing the application
-      overlay = nixpkgs.lib.composeManyExtensions [
-        poetry2nix.overlay
-        (final: prev: {
-          # The application
-          {{ cookiecutter.project_slug }} = prev.poetry2nix.mkPoetryApplication {
-            projectDir = ./.;
-          };
-        })
-      ];
-    } // (flake-utils.lib.eachDefaultSystem (system:
+    flake-utils.lib.eachDefaultSystem (system:
       let
-        pkgs = import nixpkgs {
-          inherit system;
-          overlays = [ self.overlay ];
-        };
+        pkgs = nixpkgs.legacyPackages.${system};
+        inherit (poetry2nix.lib.mkPoetry2Nix { inherit pkgs; }) mkPoetryEnv mkPoetryApplication;
       in
       {
+        packages = {
+          {{ cookiecutter.project_slug }} = mkPoetryApplication { projectDir = self; };
 
-        packages.default = pkgs.{{ cookiecutter.project_slug }}.dependencyEnv;
+          devEnv = mkPoetryEnv {
+            projectDir = self;
+            groups = [ "main" "dev" ];
+          };
 
-        devShell = pkgs.mkShell {
-          buildInputs = with pkgs; [
-            postgresql
-            nodejs
+          # refresh venv for Pycharm with: nix build .#venv -o .venv
+          venv = self.packages.${system}.devEnv;
+          default = self.packages.${system}.{{ cookiecutter.project_slug }};
+        };
+
+        devShells.default = pkgs.mkShell {
+          packages = with pkgs; [
+            just
             poetry
             pre-commit
-          ] ++ lib.optional stdenv.isDarwin openssl;
+            self.packages.${system}.devEnv
+          ];
         };
-      }));
+      });
 }

@@ -1,8 +1,0 @@
-{% raw %}{% extends "base.html" %}{% endraw %}
-
-{% raw %}{% block content %}{% endraw %}
-  <h1{% if cookiecutter.css_framework == 'Tailwind CSS' %} class="text-3xl font-bold"{% endif %}>
-    {{ cookiecutter.project_name }}
-  </h1>
-  <p>{% raw %}{{ welcome_message }}{% endraw %}</p>
-{% raw %}{% endblock %}{% endraw %}

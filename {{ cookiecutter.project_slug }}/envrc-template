@@ -1,0 +1,7 @@
+# direnv configuration for {{ cookiecutter.project_slug }}
+# ignored by .gitignore
+
+use flake
+
+export DJANGO_SECRET_KEY=!!!SET DJANGO_SECRET_KEY!!!
+export DEBUG=1

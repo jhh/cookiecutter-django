@@ -1,3 +1,4 @@
+[flake8]
 # E203: Whitespace before ':', recommended by Black
 # E501: Line too long
 # W503: line break before binary operator (superseded by W504 line break after binary operator)

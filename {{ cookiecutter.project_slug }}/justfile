@@ -4,14 +4,14 @@ _default:
   @just --list
 
 # bootstrap the development environment
-bootstrap: venv pre-commit
+bootstrap: venv pre-commit update-htmx update-alpine update-css
 
 # open the project in Pycharm
 edit:
   pycharm .
 
 # run the development server
-run check="none":
+run check="none": update-css
     {% raw %}python {{ if check != "none" { "-X dev" } else { "" } }} manage.py runserver{% endraw %}
 
 # update CSS and download all JS dependencies
@@ -43,6 +43,13 @@ update-htmx:
 
 update-alpine:
     {% raw %}{{ CURL }}{% endraw %} https://unpkg.com/alpinejs --output {{ cookiecutter.project_slug }}/static/js/alpine.js
+
+# update dev dependencies to latest version
+update-dev: && poetry-check
+    poetry add --group=dev --lock black@latest
+    poetry add --group=dev --lock django-debug-toolbar@latest
+    poetry add --group=dev --lock ipython@latest
+    poetry add --group=dev --lock rich@latest
 
 # checks poetry.lock against the version of pyproject.toml and locks if neccessary
 poetry-check:

@@ -36,6 +36,7 @@
             poetry
             pre-commit
             self.packages.${system}.devEnv
+            tailwindcss
           ];
         };
       });

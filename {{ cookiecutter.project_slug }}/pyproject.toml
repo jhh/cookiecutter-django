@@ -9,13 +9,14 @@ readme = "README.md"
 [tool.poetry.group.main.dependencies]
 python = "^3.11"
 Django = {extras = ["argon2"], version = "^5.0"}
+django-htmx = "^1.17.2"
 psycopg  = {extras = ["binary", "pool"], version = "^3.1"}
 whitenoise = "^6.6.0"
 
 [tool.poetry.group.dev.dependencies]
-black = "^24.0.0"
-rich = "^13.0.0"
-django-debug-toolbar = "^4.2"
+black = "^24.2.0"
+rich = "^13.7.0"
+django-debug-toolbar = "^4.3.0"
 ipython = "^8.21.0"
 
 [build-system]

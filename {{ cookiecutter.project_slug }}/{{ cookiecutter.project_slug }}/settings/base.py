@@ -3,11 +3,8 @@ from pathlib import Path
 
 # 1. Django Core Settings
 
-# Dangerous: disable host header validation
-ALLOWED_HOSTS = ["*"]
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-APPS_DIR = BASE_DIR / "{{ cookiecutter.project_slug }}"
+APPS_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = APPS_DIR.parent
 
 DATABASES = {
     "default": {
@@ -16,8 +13,6 @@ DATABASES = {
         "CONN_MAX_AGE": 600,
     },
 }
-
-DEBUG = os.environ.get("DEBUG", "") == "1"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -28,6 +23,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_htmx",
     "{{ cookiecutter.project_slug }}",
 ]
 
@@ -40,6 +36,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django_htmx.middleware.HtmxMiddleware",
 ]
 
 ROOT_URLCONF = "{{ cookiecutter.project_slug }}.urls"

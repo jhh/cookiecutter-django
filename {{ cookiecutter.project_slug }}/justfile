@@ -4,7 +4,7 @@ _default:
   @just --list
 
 # bootstrap the development environment
-bootstrap: venv pre-commit update-htmx update-alpine update-css
+bootstrap: pre-commit update
 
 # open the project in Pycharm
 edit:
@@ -15,7 +15,7 @@ run check="none": update-css
     {% raw %}python {{ if check != "none" { "-X dev" } else { "" } }} manage.py runserver{% endraw %}
 
 # update CSS and download all JS dependencies
-update: venv update-css update-htmx update-alpine
+update: venv update-css update-htmx update-hyperscript
     direnv reload
 
 # update CSS
@@ -41,8 +41,15 @@ update-htmx:
     echo "" >> {{ JS_DIR }}/{{ CLASS_TOOLS_JS }}
     {%- endraw %}
 
-update-alpine:
-    {% raw %}{{ CURL }}{% endraw %} https://unpkg.com/alpinejs --output {{ cookiecutter.project_slug }}/static/js/alpine.js
+HYPERSCRIPT_BASE := "https://unpkg.com/hyperscript.org"
+HYPERSCRIPT_VERSION := "0.9.12"
+HYPERSCRIPT_JS := "_hyperscript.min.js"
+
+update-hyperscript:
+    {%- raw %}
+    {{ CURL }} {{ HYPERSCRIPT_BASE }}@{{ HYPERSCRIPT_VERSION }} --output {{ JS_DIR }}/{{ HYPERSCRIPT_JS }}
+    {%- endraw %}
+
 
 # update dev dependencies to latest version
 update-dev: && poetry-check

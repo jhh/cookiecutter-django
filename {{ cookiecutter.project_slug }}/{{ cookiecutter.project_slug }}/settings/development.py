@@ -1,5 +1,5 @@
 import os
-from .base import *  # noqa
+from .base import *  # # noqa: F403
 
 # 1. Django Core Settings
 
@@ -9,11 +9,11 @@ INTERNAL_IPS = [ "127.0.0.1", ]
 
 DEBUG = os.environ.get("DEBUG", "1") == "1"
 
-INSTALLED_APPS += [
+INSTALLED_APPS += [ # noqa: F405
     "debug_toolbar",
 ]
 
-MIDDLEWARE += [
+MIDDLEWARE += [ # noqa: F405
     "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 

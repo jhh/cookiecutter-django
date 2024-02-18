@@ -24,18 +24,6 @@ repos:
     hooks:
       - id: black
 
-  - repo: https://github.com/asottile/blacken-docs
-    rev: 1.16.0
-    hooks:
-      - id: blacken-docs
-        additional_dependencies: [black==22.10.0]
-
-  - repo: https://github.com/asottile/reorder_python_imports
-    rev: v3.12.0
-    hooks:
-      - id: reorder-python-imports
-        args: [--py310-plus, --add-import, "from __future__ import annotations"]
-
   - repo: https://github.com/asottile/pyupgrade
     rev: v3.15.0
     hooks:
@@ -52,3 +40,8 @@ repos:
     rev: 7.0.0
     hooks:
       - id: flake8
+
+  - repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort

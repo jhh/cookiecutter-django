@@ -73,4 +73,4 @@ STATIC_URL = "static/"
 STATIC_ROOT = os.environ.get("STATIC_ROOT", BASE_DIR / "static")
 
 # STATICFILES_DIR is where "django.contrib.staticfiles" looks during development
-STATICFILES_DIRS = [APPS_DIR / "static"]  # noqa
+STATICFILES_DIRS = [APPS_DIR / "static"]

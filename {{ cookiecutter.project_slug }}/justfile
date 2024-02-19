@@ -10,6 +10,10 @@ bootstrap: pre-commit update
 edit:
   pycharm .
 
+# watch HTML templates and update CSS
+watch:
+    tailwindcss -i webapp/static/css/base.css -o webapp/static/css/main.css --watch
+
 # run the development server
 run check="none": update-css
     {% raw %}python {{ if check != "none" { "-X dev" } else { "" } }} manage.py runserver{% endraw %}

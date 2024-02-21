@@ -3,6 +3,12 @@
 _default:
   @just --list
 
+STATIC_DIR := "{{ cookiecutter.project_slug }}" / "static"
+{%- raw %}
+CSS_DIR := STATIC_DIR / "css"
+JS_DIR := STATIC_DIR / "js"
+{%- endraw %}
+
 # bootstrap the development environment
 bootstrap: pre-commit update
 
@@ -10,46 +16,11 @@ bootstrap: pre-commit update
 edit:
   pycharm .
 
-# watch HTML templates and update CSS
-watch:
-    tailwindcss -i webapp/static/css/base.css -o webapp/static/css/main.css --watch
-
-# run the development server
-run check="none": update-css
-    {% raw %}python {{ if check != "none" { "-X dev" } else { "" } }} manage.py runserver{% endraw %}
-
 # update CSS and download all JS dependencies
 update: venv update-css update-htmx update-alpine
     direnv reload
 
-# update CSS
-update-css:
-    tailwindcss -i {{ cookiecutter.project_slug }}/static/css/base.css -o {{ cookiecutter.project_slug }}/static/css/main.css
-
 CURL := "curl --no-progress-meter --location"
-JS_DIR := "{{ cookiecutter.project_slug }}/static/js"
-
-HTMX_BASE := "https://unpkg.com/htmx.org/dist"
-HTMX_EXT_BASE := "https://unpkg.com/htmx.org/dist/ext"
-HTMX_JS := "htmx.min.js"
-CLASS_TOOLS_JS := "class-tools.js"
-
-# update the HTML library
-update-htmx:
-    {%- raw %}
-    {{ CURL }} {{ HTMX_BASE }}/{{ HTMX_JS }} --output {{ JS_DIR }}/{{ HTMX_JS }}
-    {{ CURL }} {{ HTMX_EXT_BASE }}/{{ CLASS_TOOLS_JS }} --output {{ JS_DIR }}/{{ CLASS_TOOLS_JS }}
-
-    # add newline so pre-commit doesn't complain
-    echo "" >> {{ JS_DIR }}/{{ HTMX_JS }}
-    echo "" >> {{ JS_DIR }}/{{ CLASS_TOOLS_JS }}
-    {%- endraw %}
-
-# update the Alpine JS library to latest version
-update-alpine:
-    {%- raw %}
-    curl --no-progress-meter --location https://unpkg.com/alpinejs --output {{ JS_DIR }}/alpine.js
-    {%- endraw %}
 
 # update dev dependencies to latest version
 update-dev: && poetry-check
@@ -73,3 +44,35 @@ pre-commit:
 # refresh the python packages in the dev env
 venv: poetry-check
     nix build .#devEnv -o .venv
+
+HTMX_BASE := "https://unpkg.com/htmx.org/dist"
+HTMX_EXT_BASE := "https://unpkg.com/htmx.org/dist/ext"
+HTMX_JS := "htmx.min.js"
+CLASS_TOOLS_JS := "class-tools.js"
+
+{%- raw %}
+# update CSS
+update-css:
+    tailwindcss -i {{ CSS_DIR }}/base.css -o {{ CSS_DIR }}/main.css
+
+# watch HTML templates and update CSS
+watch:
+    tailwindcss -i {{ CSS_DIR }}/base.css -o {{ CSS_DIR }}/main.css --watch
+
+# run the development server
+run check="none": update-css
+    python {{ if check != "none" { "-X dev" } else { "" } }} manage.py runserver
+
+# update the HTML library
+update-htmx:
+    {{ CURL }} {{ HTMX_BASE }}/{{ HTMX_JS }} --output {{ JS_DIR }}/{{ HTMX_JS }}
+    {{ CURL }} {{ HTMX_EXT_BASE }}/{{ CLASS_TOOLS_JS }} --output {{ JS_DIR }}/{{ CLASS_TOOLS_JS }}
+
+    # add newline so pre-commit doesn't complain
+    echo "" >> {{ JS_DIR }}/{{ HTMX_JS }}
+    echo "" >> {{ JS_DIR }}/{{ CLASS_TOOLS_JS }}
+
+# update the Alpine JS library to latest version
+update-alpine:
+    curl --no-progress-meter --location https://unpkg.com/alpinejs --output {{ JS_DIR }}/alpine.js
+{%- endraw %}

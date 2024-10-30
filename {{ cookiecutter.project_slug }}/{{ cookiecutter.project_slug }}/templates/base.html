@@ -1,14 +1,13 @@
-{%- raw %}
+{% raw %}
 {% load static %}
 {% load django_htmx %}
-{%- endraw %}
-
+{% endraw %}
 <!DOCTYPE html>
 <!--suppress XmlUnboundNsPrefix, CheckEmptyScriptTag -->
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1" >
 
     <title>{{ cookiecutter.project_name }}</title>
 
@@ -16,6 +15,10 @@
     <link rel="preconnect" href="https://rsms.me/" />
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
     {%- raw -%}<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}" />{%- endraw -%}
+    {% endif -%}
+    {% if cookiecutter.css_framework == "bootstrap" -%}
+    {%- raw -%}<link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}" >{%- endraw -%}
+    {%- raw -%}<script src="{% static 'js/bootstrap.bundle.min.js' %}" defer></script>{%- endraw -%}
     {% endif -%}
 
     {% if cookiecutter.use_alpine -%}

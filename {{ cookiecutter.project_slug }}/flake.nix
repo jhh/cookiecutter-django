@@ -36,7 +36,7 @@
             poetry
             pre-commit
             self.packages.${system}.devEnv
-            tailwindcss
+            {% if cookiecutter.css_framework == "tailwind" -%}tailwindcss{%- endif -%}
           ];
         };
       });

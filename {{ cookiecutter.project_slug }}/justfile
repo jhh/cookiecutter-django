@@ -4,10 +4,8 @@ _default:
   @just --list
 
 STATIC_DIR := "{{ cookiecutter.project_slug }}" / "static"
-{%- raw %}
 CSS_DIR := STATIC_DIR / "css"
 JS_DIR := STATIC_DIR / "js"
-{%- endraw %}
 
 # bootstrap the development environment
 bootstrap: pre-commit update
@@ -17,7 +15,7 @@ edit:
   pycharm .
 
 # update CSS and download all JS dependencies
-update: venv update-css update-htmx update-alpine
+update: venv update-htmx {% if cookiecutter.css_framework != "none" -%}update-css{%- endif %} update-alpine
     direnv reload
 
 CURL := "curl --no-progress-meter --location"
@@ -51,19 +49,19 @@ HTMX_JS := "htmx.min.js"
 CLASS_TOOLS_JS := "class-tools.js"
 
 {% macro ev(name) -%}
-{% raw -%} {{ {%- endraw %} {{ name }} {% raw %} }} {%- endraw %}
-{%- endmacro %}
-
-# update CSS
+{% raw -%} {{ {%- endraw %} {{ name }} {% raw -%} }} {%- endraw %}
+{%- endmacro -%}
+{% if cookiecutter.css_framework == "tailwind" -%}
 update-css:
     tailwindcss -i {{ ev('CSS_DIR') }}/base.css -o {{ ev('CSS_DIR') }}/main.css
 
 # watch HTML templates and update CSS
 watch:
     tailwindcss -i {{ ev('CSS_DIR') }}/base.css -o {{ ev('CSS_DIR') }}/main.css --watch
+{% endif -%}
 
 # run the development server
-run check="none": update-css
+run check="none": {% if cookiecutter.css_framework != "none" -%}update-css{%- endif %}
     python {{ ev('if check != "none" { "-X dev" } else { "" }') }} manage.py runserver
 
 # update the HTML library

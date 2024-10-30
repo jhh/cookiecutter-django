@@ -12,15 +12,14 @@
 
     <title>{{ cookiecutter.project_name }}</title>
 
-    {%- raw %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}" />
-
+    {% if cookiecutter.css_framework == "tailwind" -%}
     <link rel="preconnect" href="https://rsms.me/" />
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    {%- raw -%}<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}" />{%- endraw -%}
+    {% endif -%}
 
-    <script src="{% static 'js/alpine.js' %}" defer></script>
-    <script src="{% static 'js/htmx.min.js' %}" defer></script>
-    {%- endraw %}
+    {%- raw -%}<script src="{% static 'js/alpine.js' %}" defer></script>{%- endraw -%}
+    {%- raw -%}<script src="{% static 'js/htmx.min.js' %}" defer></script>{%- endraw -%}
   </head>
 
   <body>

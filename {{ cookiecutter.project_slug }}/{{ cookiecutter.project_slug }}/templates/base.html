@@ -18,7 +18,9 @@
     {%- raw -%}<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}" />{%- endraw -%}
     {% endif -%}
 
+    {% if cookiecutter.use_alpine -%}
     {%- raw -%}<script src="{% static 'js/alpine.js' %}" defer></script>{%- endraw -%}
+    {% endif %}
     {%- raw -%}<script src="{% static 'js/htmx.min.js' %}" defer></script>{%- endraw -%}
   </head>
 

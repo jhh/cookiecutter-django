@@ -15,7 +15,7 @@ edit:
   pycharm .
 
 # update CSS and download all JS dependencies
-update: venv update-htmx {% if cookiecutter.css_framework != "none" -%}update-css{%- endif %} update-alpine
+update: venv update-htmx {% if cookiecutter.css_framework != "none" -%}update-css{%- endif %} {% if cookiecutter.use_alpine -%}update-alpine{%- endif %}
     direnv reload
 
 CURL := "curl --no-progress-meter --location"
@@ -73,6 +73,8 @@ update-htmx:
     echo "" >> {{ ev('JS_DIR') }}/{{ ev('HTMX_JS') }}
     echo "" >> {{ ev('JS_DIR') }}/{{ ev('CLASS_TOOLS_JS') }}
 
+{% if cookiecutter.use_alpine -%}
 # update the Alpine JS library to latest version
 update-alpine:
     {{ ev('CURL') }} https://unpkg.com/alpinejs --output {{ ev('JS_DIR') }}/alpine.js
+{%- endif %}

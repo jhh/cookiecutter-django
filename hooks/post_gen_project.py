@@ -26,6 +26,7 @@ def set_django_secret_key(env_path):
         f.write(file_contents)
         f.truncate()
 
+
 def create_empty_js_dir():
     p = Path("{{ cookiecutter.project_slug}}/static/js")
     p.mkdir()

@@ -2,7 +2,7 @@
   description = "Cookiecutter template for Django projects.";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     flake-utils.url = "github:numtide/flake-utils";
   };
 
@@ -11,7 +11,7 @@
       let pkgs = nixpkgs.legacyPackages.${system}; in
       {
         devShell = pkgs.mkShell {
-          nativeBuildInputs = with pkgs; [ cookiecutter pre-commit ];
+          nativeBuildInputs = with pkgs; [ cookiecutter just pre-commit ];
         };
       }
     );

@@ -50,29 +50,31 @@ HTMX_EXT_BASE := "https://unpkg.com/htmx.org/dist/ext"
 HTMX_JS := "htmx.min.js"
 CLASS_TOOLS_JS := "class-tools.js"
 
-{%- raw %}
+{% macro ev(name) -%}
+{% raw -%} {{ {%- endraw %} {{ name }} {% raw %} }} {%- endraw %}
+{%- endmacro %}
+
 # update CSS
 update-css:
-    tailwindcss -i {{ CSS_DIR }}/base.css -o {{ CSS_DIR }}/main.css
+    tailwindcss -i {{ ev('CSS_DIR') }}/base.css -o {{ ev('CSS_DIR') }}/main.css
 
 # watch HTML templates and update CSS
 watch:
-    tailwindcss -i {{ CSS_DIR }}/base.css -o {{ CSS_DIR }}/main.css --watch
+    tailwindcss -i {{ ev('CSS_DIR') }}/base.css -o {{ ev('CSS_DIR') }}/main.css --watch
 
 # run the development server
 run check="none": update-css
-    python {{ if check != "none" { "-X dev" } else { "" } }} manage.py runserver
+    python {{ ev('if check != "none" { "-X dev" } else { "" }') }} manage.py runserver
 
 # update the HTML library
 update-htmx:
-    {{ CURL }} {{ HTMX_BASE }}/{{ HTMX_JS }} --output {{ JS_DIR }}/{{ HTMX_JS }}
-    {{ CURL }} {{ HTMX_EXT_BASE }}/{{ CLASS_TOOLS_JS }} --output {{ JS_DIR }}/{{ CLASS_TOOLS_JS }}
+    {{ ev('CURL') }} {{ ev('HTMX_BASE') }}/{{ ev('HTMX_JS') }} --output {{ ev('JS_DIR') }}/{{ ev('HTMX_JS') }}
+    {{ ev('CURL') }} {{ ev('HTMX_EXT_BASE') }}/{{ ev('CLASS_TOOLS_JS') }} --output {{ ev('JS_DIR') }}/{{ ev('CLASS_TOOLS_JS') }}
 
     # add newline so pre-commit doesn't complain
-    echo "" >> {{ JS_DIR }}/{{ HTMX_JS }}
-    echo "" >> {{ JS_DIR }}/{{ CLASS_TOOLS_JS }}
+    echo "" >> {{ ev('JS_DIR') }}/{{ ev('HTMX_JS') }}
+    echo "" >> {{ ev('JS_DIR') }}/{{ ev('CLASS_TOOLS_JS') }}
 
 # update the Alpine JS library to latest version
 update-alpine:
-    curl --no-progress-meter --location https://unpkg.com/alpinejs --output {{ JS_DIR }}/alpine.js
-{%- endraw %}
+    {{ ev('CURL') }} https://unpkg.com/alpinejs --output {{ ev('JS_DIR') }}/alpine.js

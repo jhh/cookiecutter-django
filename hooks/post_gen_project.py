@@ -1,9 +1,14 @@
 import json
+import os
 import random
 import string
 from pathlib import Path
 
 DJANGO_SECRET_LENGTH = 64
+
+REMOVE_PATHS = [
+    '{% if cookiecutter.use_tailwind != "y" %}tailwind.config.js{% endif %}',
+]
 
 
 def rename_env():
@@ -28,14 +33,22 @@ def set_django_secret_key(env_path):
 
 
 def create_empty_js_dir():
-    p = Path("{{ cookiecutter.project_slug}}/static/js")
-    p.mkdir()
+    path = Path("{{ cookiecutter.project_slug}}/static/js")
+    path.mkdir()
+
+
+def remove_paths():
+    for path in REMOVE_PATHS:
+        path = Path(path.strip())
+        if path.exists():
+            path.unlink() if path.is_file() else path.rmdir()
 
 
 def main():
     env_path = rename_env()
     set_django_secret_key(env_path)
     create_empty_js_dir()
+    remove_paths()
 
 
 if __name__ == "__main__":

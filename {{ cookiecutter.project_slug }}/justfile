@@ -1,4 +1,7 @@
 # just manual: https://github.com/casey/just#readme
+{% macro ev(name) -%}
+{% raw -%} {{ {%- endraw %} {{ name }} {% raw -%} }} {%- endraw %}
+{%- endmacro -%}
 
 _default:
   @just --list
@@ -13,6 +16,10 @@ bootstrap: pre-commit update
 # open the project in Pycharm
 edit:
   pycharm .
+
+# run the development server
+run check="none": {% if cookiecutter.css_framework != "none" -%}update-css{%- endif %}
+    python {{ ev('if check != "none" { "-X dev" } else { "" }') }} manage.py runserver
 
 # update CSS and download all JS dependencies
 update: venv update-htmx {% if cookiecutter.css_framework != "none" -%}update-css{%- endif %} {% if cookiecutter.use_alpine -%}update-alpine{%- endif %}
@@ -48,9 +55,6 @@ HTMX_EXT_BASE := "https://unpkg.com/htmx.org/dist/ext"
 HTMX_JS := "htmx.min.js"
 CLASS_TOOLS_JS := "class-tools.js"
 
-{% macro ev(name) -%}
-{% raw -%} {{ {%- endraw %} {{ name }} {% raw -%} }} {%- endraw %}
-{%- endmacro -%}
 {% if cookiecutter.css_framework == "tailwind" -%}
 update-css:
     tailwindcss -i {{ ev('CSS_DIR') }}/base.css -o {{ ev('CSS_DIR') }}/main.css
@@ -59,10 +63,6 @@ update-css:
 watch:
     tailwindcss -i {{ ev('CSS_DIR') }}/base.css -o {{ ev('CSS_DIR') }}/main.css --watch
 {% endif -%}
-
-# run the development server
-run check="none": {% if cookiecutter.css_framework != "none" -%}update-css{%- endif %}
-    python {{ ev('if check != "none" { "-X dev" } else { "" }') }} manage.py runserver
 
 # update the HTML library
 update-htmx:

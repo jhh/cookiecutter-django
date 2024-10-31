@@ -23,6 +23,12 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+{%- if cookiecutter.use_crispy_forms %}
+    "crispy_forms",
+{%- if cookiecutter.css_framework == "bootstrap" %}
+    "crispy_bootstrap5",
+{% endif -%}
+{% endif %}
     "django_htmx",
     "{{ cookiecutter.project_slug }}",
 ]
@@ -59,6 +65,11 @@ TEMPLATES = [
     },
 ]
 
+{%- if cookiecutter.use_crispy_forms and cookiecutter.css_framework == "bootstrap" %}
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+
+CRISPY_TEMPLATE_PACK = "bootstrap5"
+{% endif -%}
 USE_TZ = True
 
 STORAGES = {

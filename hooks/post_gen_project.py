@@ -11,6 +11,7 @@ REMOVE_PATHS = [
     "{{ cookiecutter.project_slug }}/templates/index.bootstrap.html",
     "{{ cookiecutter.project_slug }}/templates/index.none.html",
     "{{ cookiecutter.project_slug }}/templates/index.tailwind.html",
+    "{% if not cookiecutter.use_crispy_forms %}{{ cookiecutter.project_slug }}/forms.py{% endif %}",
 ]
 
 

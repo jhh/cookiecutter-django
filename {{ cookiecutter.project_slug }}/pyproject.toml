@@ -9,6 +9,7 @@ readme = "README.md"
 [tool.poetry.group.main.dependencies]
 python = "^3.12"
 django = {extras = ["argon2"], version = "^5.0"}
+environs = {extras = ["django"], version = "^11.0"}
 {% if cookiecutter.use_crispy_forms -%}
 django-crispy-forms = "^2.0"
 {% if cookiecutter.css_framework == "bootstrap" -%}
@@ -21,9 +22,10 @@ whitenoise = "^6.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.0"
-rich = "^13.0"
 django-debug-toolbar = "^4.0"
 ipython = "^8.0"
+pytest-django = "^4.0"
+rich = "^13.0"
 
 [build-system]
 requires = ["poetry-core"]
@@ -31,8 +33,13 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.black]
 line-length = 99
-target-version = ['py311']
+target-version = ['py312']
 
 [tool.isort]
 profile = "black"
 add_imports = "from __future__ import annotations"
+
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "{{ cookiecutter.project_slug }}.settings"
+python_files = ["test_*.py", "*_test.py"]

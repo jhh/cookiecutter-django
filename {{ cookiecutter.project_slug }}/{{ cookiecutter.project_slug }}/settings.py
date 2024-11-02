@@ -1,19 +1,24 @@
-import os
 from pathlib import Path
 
-# 1. Django Core Settings
+import environs
 
-APPS_DIR = Path(__file__).resolve().parent.parent
-BASE_DIR = APPS_DIR.parent
+APP_DIR = Path(__file__).resolve().parent
+BASE_DIR = APP_DIR.parent
+
+env = environs.Env()
+env.read_env(BASE_DIR / ".env", recurse=False)
+
+DEBUG = env.bool("DEBUG", default=False)
+SECRET_KEY = env.str("SECRET_KEY")
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "{{ cookiecutter.project_slug }}",
-        "CONN_MAX_AGE": 600,
-    },
+    "default": env.dj_db_url(
+        "DATABASE_URL",
+        default="postgresql:///{{ cookiecutter.project_slug }}",
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
 }
-
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 INSTALLED_APPS = [
@@ -30,6 +35,7 @@ INSTALLED_APPS = [
 {% endif -%}
 {% endif %}
     "django_htmx",
+    "debug_toolbar",
     "{{ cookiecutter.project_slug }}",
 ]
 
@@ -43,16 +49,15 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = "{{ cookiecutter.project_slug }}.urls"
 
-SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
-
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [APPS_DIR / "templates"],
+        "DIRS": [APP_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -81,7 +86,44 @@ STORAGES = {
 STATIC_URL = "static/"
 
 # STATIC_ROOT is where collectstatic will collect files for deployment
-STATIC_ROOT = os.environ.get("STATIC_ROOT", BASE_DIR / "static")
+STATIC_ROOT = env.str("STATIC_ROOT", default=str(BASE_DIR / "static"))
 
 # STATICFILES_DIR is where "django.contrib.staticfiles" looks during development
-STATICFILES_DIRS = [APPS_DIR / "static"]
+STATICFILES_DIRS = [APP_DIR / "static"]
+
+if DEBUG:
+    ALLOWED_HOSTS = ["*"]
+    INTERNAL_IPS = [
+        "127.0.0.1",
+    ]
+
+    LOGGING = {
+        "version": 1,
+        "disable_existing_loggers": False,
+        "formatters": {
+            "rich": {"datefmt": "[%X]"},
+        },
+        "handlers": {
+            "console": {
+                "class": "rich.logging.RichHandler",
+                "formatter": "rich",
+                "level": "DEBUG",
+                "rich_tracebacks": True,
+                "tracebacks_show_locals": True,
+            },
+        },
+        "loggers": {
+            "django": {
+                "handlers": [],
+                "level": "INFO",
+            },
+            "website": {
+                "handlers": [],
+                "level": "DEBUG",
+            },
+        },
+        "root": {
+            "handlers": ["console"],
+            "level": "INFO",
+        },
+    }

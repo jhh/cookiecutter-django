@@ -29,7 +29,7 @@ CURL := "curl --no-progress-meter --location"
 
 # update dev dependencies to latest version
 update-dev: && poetry-check
-    poetry add --group=dev --lock black@latest django-debug-toolbar@latest ipython@latest rich@latest
+    poetry add --group=dev --lock black@latest django-debug-toolbar@latest ipython@latest rich@latest pytest-django@latest
 
 # update application dependencies to latest version specified by pyproject.toml
 update-main: && poetry-check

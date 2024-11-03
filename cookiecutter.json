@@ -5,8 +5,15 @@
   "author_name": "Jeff Hutchison",
   "domain_name": "{{ cookiecutter.project_slug }}.j3ff.io",
   "author_email": "jeff@{{ cookiecutter.domain_name }}",
-  "css_framework": ["none", "bootstrap", "tailwind"],
+  "css_framework": [
+    "none",
+    "bootstrap",
+    "tailwind"
+  ],
   "use_alpine": false,
   "use_crispy_forms": true,
-  "_extensions": ["local_extensions.fix_readline"]
+  "_extensions": [
+    "local_extensions.fix_readline",
+    "cookiecutter.extensions.RandomStringExtension"
+  ]
 }

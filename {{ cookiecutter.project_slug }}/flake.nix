@@ -127,11 +127,14 @@
 
           testScript = ''
             with subtest("Check {{ cookiecutter.__project_snake }} app comes up"):
-                machine.wait_for_unit("{{ cookiecutter.__project_snake }}.service")
-                machine.wait_for_open_port(8000)
+              machine.wait_for_unit("{{ cookiecutter.__project_snake }}.service")
+              machine.wait_for_open_port(8000)
 
             with subtest("Staticfiles are generated"):
               machine.succeed("curl -sf http://localhost:8000/static/ui/main.css")
+
+            with subtest("Home page is live"):
+              machine.succeed("curl -sf http://localhost:8000/ | grep 'Default page'")
           '';
         };
       };

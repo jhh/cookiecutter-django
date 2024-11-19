@@ -4,7 +4,7 @@
   "__project_snake": "{{ cookiecutter.project_slug|replace('_', '-') }}",
   "description": "Behold My Awesome Project!",
   "author_name": "Jeff Hutchison",
-  "domain_name": "{{ cookiecutter.project_slug }}.j3ff.io",
+  "domain_name": "{{ cookiecutter.__project_snake }}.j3ff.io",
   "author_email": "jeff@j3ff.io",
   "_extensions": [
     "local_extensions.fix_readline",

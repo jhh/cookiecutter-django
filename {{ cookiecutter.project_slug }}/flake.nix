@@ -55,97 +55,97 @@
               # {{ cookiecutter.__project_snake }} is the name of our example package
               {{ cookiecutter.__project_snake }} = prev.{{ cookiecutter.__project_snake }}.overrideAttrs (old: {
 
-              passthru = old.passthru // {
-              tests =
-              (old.tests or { }) //
-              {
+                passthru = old.passthru // {
+                  tests =
+                    (old.tests or { }) //
+                      {
 
-              mypy =
-              let
-              venv = final.mkVirtualEnv "{{ cookiecutter.__project_snake }}-typing-env" {
-              {{ cookiecutter.__project_snake }} = [ "typing" ];
+                        mypy =
+                          let
+                            venv = final.mkVirtualEnv "{{ cookiecutter.__project_snake }}-typing-env" {
+                              {{ cookiecutter.__project_snake }} = [ "typing" ];
+                            };
+                          in
+                          stdenv.mkDerivation {
+                            name = "${final.{{ cookiecutter.__project_snake }}.name}-mypy";
+                            inherit (final.{{ cookiecutter.__project_snake }}) src;
+                            nativeBuildInputs = [ venv ];
+                            dontConfigure = true;
+                            dontInstall = true;
+                            buildPhase = ''
+                              export MYPYPATH=apps
+                              mypy . --junit-xml $out/junit.xml
+                            '';
+                          };
+
+                        pytest =
+                          let
+                            venv = final.mkVirtualEnv "{{ cookiecutter.__project_snake }}-pytest-env" {
+                              {{ cookiecutter.__project_snake }} = [ "test" ];
+                            };
+                          in
+                          stdenv.mkDerivation {
+                            name = "${final.{{ cookiecutter.__project_snake }}.name}-pytest";
+                            inherit (final.{{ cookiecutter.__project_snake }}) src;
+                            nativeBuildInputs = [
+                              venv
+                            ];
+
+                            dontConfigure = true;
+
+                            buildPhase = ''
+                              pytest --junit-xml=$out/junit.xml
+                            '';
+                          };
+                      } // lib.optionalAttrs stdenv.isLinux {
+                      #
+                      nixos =
+                        let
+                          venv = final.mkVirtualEnv "{{ cookiecutter.__project_snake }}-nixos-test-env" workspace.deps.default;
+                          secrets = pkgs.writeText "{{ cookiecutter.__project_snake }}-test-secrets" ''
+                            DEBUG=false
+                            DJANGO_DATABASE_URL="sqlite:///tmp/db.sqlite3"
+                          '';
+                        in
+                        pkgs.nixosTest {
+                          name = "{{ cookiecutter.__project_snake }}-nixos-test";
+
+                          nodes.machine = { ... }:
+                            {
+                              imports = [
+                                self.nixosModules.default
+                              ];
+
+                              services.{{ cookiecutter.__project_snake }} = {
+                                enable = true;
+                                inherit venv;
+                                secrets = [ secrets ];
+                              };
+
+                              system.stateVersion = "24.11";
+                            };
+
+                          testScript = ''
+                            with subtest("Check {{ cookiecutter.__project_snake }} app comes up"):
+                              machine.wait_for_unit("{{ cookiecutter.__project_snake }}.service")
+                              machine.wait_for_open_port(8000)
+
+                            with subtest("Staticfiles are generated"):
+                              machine.succeed("curl -sf http://localhost:8000/static/ui/main.css")
+
+                            with subtest("Home page is live"):
+                              machine.succeed("curl -sf http://localhost:8000/ | grep 'Default page'")
+                          '';
+                        };
+                    };
+                };
+              });
+
             };
+
           in
-          stdenv.mkDerivation {
-            name = "${final.{{ cookiecutter.__project_snake }}.name}-mypy";
-            inherit (final.{{ cookiecutter.__project_snake }}) src;
-            nativeBuildInputs = [ venv ];
-            dontConfigure = true;
-            dontInstall = true;
-            buildPhase = ''
-              export MYPYPATH=apps
-              mypy . --junit-xml $out/junit.xml
-            '';
-          };
-
-        pytest =
-      let
-      venv = final.mkVirtualEnv "{{ cookiecutter.__project_snake }}-pytest-env" {
-      {{ cookiecutter.__project_snake }} = [ "test" ];
-      };
-      in
-      stdenv.mkDerivation {
-      name = "${final.{{ cookiecutter.__project_snake }}.name}-pytest";
-      inherit (final.{{ cookiecutter.__project_snake }}) src;
-      nativeBuildInputs = [
-        venv
-      ];
-
-      dontConfigure = true;
-
-      buildPhase = ''
-        pytest --junit-xml=$out/junit.xml
-      '';
-      };
-      } // lib.optionalAttrs stdenv.isLinux {
-      #
-      nixos =
-        let
-          venv = final.mkVirtualEnv "{{ cookiecutter.__project_snake }}-nixos-test-env" workspace.deps.default;
-          secrets = pkgs.writeText "{{ cookiecutter.__project_snake }}-test-secrets" ''
-            DEBUG=false
-            DJANGO_DATABASE_URL="sqlite:///tmp/db.sqlite3"
-          '';
-        in
-        pkgs.nixosTest {
-          name = "{{ cookiecutter.__project_snake }}-nixos-test";
-
-          nodes.machine = { ... }:
-            {
-              imports = [
-                self.nixosModules.default
-              ];
-
-              services.{{ cookiecutter.__project_snake }} = {
-                enable = true;
-                inherit venv;
-                secrets = [ secrets ];
-              };
-
-              system.stateVersion = "24.11";
-            };
-
-          testScript = ''
-            with subtest("Check {{ cookiecutter.__project_snake }} app comes up"):
-              machine.wait_for_unit("{{ cookiecutter.__project_snake }}.service")
-              machine.wait_for_open_port(8000)
-
-            with subtest("Staticfiles are generated"):
-              machine.succeed("curl -sf http://localhost:8000/static/ui/main.css")
-
-            with subtest("Home page is live"):
-              machine.succeed("curl -sf http://localhost:8000/ | grep 'Default page'")
-          '';
-        };
-      };
-      };
-      });
-
-      };
-
-      in
-      baseSet.overrideScope (lib.composeExtensions overlay pyprojectOverrides)
-      );
+          baseSet.overrideScope (lib.composeExtensions overlay pyprojectOverrides)
+        );
 
       # Django static roots grouped per system
       staticRoots = forAllSystems (
@@ -187,7 +187,7 @@
           in
           # Inherit tests from passthru.tests into flake checks
           pythonSet.{{ cookiecutter.__project_snake }}.passthru.tests
-      );
+        );
 
       nixosModules = {
         default = { config, lib, pkgs, ... }:

@@ -1,92 +1,45 @@
 # just manual: https://github.com/casey/just#readme
-{% macro ev(name) -%}
-{% raw -%} {{ {%- endraw %} {{ name }} {% raw -%} }} {%- endraw %}
-{%- endmacro -%}
-
 _default:
-  @just --list
-
-STATIC_DIR := "{{ cookiecutter.project_slug }}" / "static"
-CSS_DIR := STATIC_DIR / "css"
-JS_DIR := STATIC_DIR / "js"
+    @just --list
 
 # bootstrap the development environment
-bootstrap: pre-commit update
+init: pre-commit npm-install
+    echo DEBUG=true > .env
 
-# open the project in Pycharm
-edit:
-  pycharm .
+# run mypy type checks
+mypy:
+    uv run mypy .
+
+# run tests and create coverage report
+pytest:
+    uv run pytest --cov --cov-report=html
+    [[ -x /usr/bin/open ]] && /usr/bin/open htmlcov/index.html
+
+# run manage.py with command
+manage command:
+    uv run --no-sync config/manage.py {{ command }}
 
 # run the development server
-run check="none": {% if cookiecutter.css_framework != "none" -%}update-css{%- endif %}
-    python {{ ev('if check != "none" { "-X dev" } else { "" }') }} manage.py runserver
+run: (manage "runserver")
 
-# update CSS and download all JS dependencies
-update: venv update-htmx {% if cookiecutter.css_framework != "none" -%}update-css{%- endif %} {% if cookiecutter.use_alpine -%}update-alpine{%- endif %}
-    direnv reload
+# create database migrations if needed
+makemigrations: (manage "makemigrations")
 
-CURL := "curl --no-progress-meter --location"
+# migrate the database
+migrate: (manage "migrate")
 
-# update dev dependencies to latest version
-update-dev: && poetry-check
-    poetry add --group=dev --lock black@latest django-debug-toolbar@latest ipython@latest rich@latest pytest-django@latest
-
-# update application dependencies to latest version specified by pyproject.toml
-update-main: && poetry-check
-    poetry update --lock -- django django-htmx psycopg whitenoise
-
-# checks poetry.lock against the version of pyproject.toml and locks if neccessary
-poetry-check:
-    poetry check --lock --quiet || (just poetry-lock)
-
-# locks the python packages in pyproject.toml without updating the poetry env
-poetry-lock:
-    poetry lock --no-update
+# run the ipython repl
+shell: (manage "shell")
 
 # install pre-commit hooks
 pre-commit:
     pre-commit install --install-hooks
 
-# refresh the python packages in the dev env
-venv: poetry-check
-    nix build .#devEnv -o .venv
+npm-install:
+    npm install
 
-HTMX_BASE := "https://unpkg.com/htmx.org/dist"
-HTMX_EXT_BASE := "https://unpkg.com/htmx.org/dist/ext"
-HTMX_JS := "htmx.min.js"
-CLASS_TOOLS_JS := "class-tools.js"
-BOOTSTRAP_BASE := "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist"
-BOOTSTRAP_CSS := "css/bootstrap.min.css"
-BOOTSTRAP_JS := "js/bootstrap.bundle.min.js"
+static-watch:
+    node static-build.mjs --watch
 
-{% if cookiecutter.css_framework == "tailwind" -%}
-# update Tailwind CSS files
-update-css:
-    tailwindcss -i {{ ev('CSS_DIR') }}/base.css -o {{ ev('CSS_DIR') }}/main.css
-
-# watch HTML templates and update CSS
-watch:
-    tailwindcss -i {{ ev('CSS_DIR') }}/base.css -o {{ ev('CSS_DIR') }}/main.css --watch
-{% endif -%}
-
-{% if cookiecutter.css_framework == "bootstrap" -%}
-# update Bootstrap CSS and JS files
-update-css:
-    {{ ev('CURL') }} {{ ev('BOOTSTRAP_BASE') }}/{{ ev('BOOTSTRAP_JS') }} --output {{ ev('STATIC_DIR') }}/{{ ev('BOOTSTRAP_JS') }}
-    {{ ev('CURL') }} {{ ev('BOOTSTRAP_BASE') }}/{{ ev('BOOTSTRAP_CSS') }} --output {{ ev('STATIC_DIR') }}/{{ ev('BOOTSTRAP_CSS') }}
-{% endif -%}
-
-# update the HTMX library
-update-htmx:
-    {{ ev('CURL') }} {{ ev('HTMX_BASE') }}/{{ ev('HTMX_JS') }} --output {{ ev('JS_DIR') }}/{{ ev('HTMX_JS') }}
-    {{ ev('CURL') }} {{ ev('HTMX_EXT_BASE') }}/{{ ev('CLASS_TOOLS_JS') }} --output {{ ev('JS_DIR') }}/{{ ev('CLASS_TOOLS_JS') }}
-
-    # add newline so pre-commit doesn't complain
-    echo "" >> {{ ev('JS_DIR') }}/{{ ev('HTMX_JS') }}
-    echo "" >> {{ ev('JS_DIR') }}/{{ ev('CLASS_TOOLS_JS') }}
-
-{% if cookiecutter.use_alpine -%}
-# update the Alpine JS library to latest version
-update-alpine:
-    {{ ev('CURL') }} https://unpkg.com/alpinejs --output {{ ev('JS_DIR') }}/alpine.js
-{%- endif %}
+static-build:
+    node static-build.mjs

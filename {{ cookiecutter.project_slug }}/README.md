@@ -1,4 +1,6 @@
-# ${REPO_NAME}
+# {{ cookiecutter.project_name }}
+
+{{ cookiecutter.description }}
 
 ## Direnv
 
@@ -26,7 +28,7 @@ Some sensible default setting for production.
 - Two `gunicorn` workers are started.
 
 ```shell
-DJANGO_ALLOWED_HOSTS="${REPO_NAME}.j3ff.io,127.0.0.1"
+DJANGO_ALLOWED_HOSTS="{{ cookiecutter.domain_name }},127.0.0.1"
 DJANGO_SECRET_KEY=<REPLACE>
 DJANGO_DATABASE_URL=postgres:///${REPO_NAME}
 DJANGO_DATABASE_OPTIONS='{"pool": {"min_size": 2, "max_size": 4}}'

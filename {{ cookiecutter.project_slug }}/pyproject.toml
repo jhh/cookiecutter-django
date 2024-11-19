@@ -20,7 +20,7 @@ dependencies = [
 include = ["/config", "/{{ cookiecutter.project_slug }}"]
 
 [project.scripts]
-{{ cookiecutter.project_slug }}-manage = "config.manage:main"
+{{ cookiecutter.__project_snake }}-manage = "config.manage:main"
 
 [dependency-groups]
 dev = [

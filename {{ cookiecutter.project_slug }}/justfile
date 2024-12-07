@@ -3,8 +3,9 @@ _default:
     @just --list
 
 # bootstrap the development environment
-init: pre-commit npm-install
+init: pre-commit npm-install static-build
     echo DEBUG=true > .env
+    git add package-lock.json
 
 # run mypy type checks
 mypy:

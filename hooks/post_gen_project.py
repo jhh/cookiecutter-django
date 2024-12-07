@@ -29,6 +29,11 @@ def set_django_secret_key(env_path):
 def main():
     env_path = rename_env()
     set_django_secret_key(env_path)
+    print("Next...")
+    print("  $ cd {{ cookiecutter.project_slug }}")
+    print("  $ direnv allow")
+    print("  $ git init && git add .")
+    print("  $ just init")
 
 
 if __name__ == "__main__":
